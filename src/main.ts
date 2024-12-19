@@ -8,7 +8,8 @@ async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://localhost:5672'],
+      // urls: ['amqp://localhost:5672'],
+      urls: ['amqp://rabbitmq:5672'],
       queue: 'main_queue',
     },
   });
@@ -22,6 +23,6 @@ async function bootstrap() {
 
   await app.listen();
 
-  logger.log('Microservicio OficialesUnidades is listening');
+  logger.log('Microservicio OficialesUnidades is running');
 }
 bootstrap();

@@ -6,14 +6,14 @@ import { UpdateOficialeDto } from './dto/update-oficiale.dto';
 
 @Controller()
 export class OficialesController {
-  constructor(private readonly oficialesService: OficialesService) {}
+  constructor(private readonly oficialesService: OficialesService) { }
 
-  @MessagePattern('createOficiale')
+  @MessagePattern('crear.oficial')
   create(@Payload() createOficialeDto: CreateOficialeDto) {
     return this.oficialesService.create(createOficialeDto);
   }
 
-  @MessagePattern('findAllOficiales')
+  @MessagePattern('get.oficiales')
   findAll() {
     return this.oficialesService.findAll();
   }

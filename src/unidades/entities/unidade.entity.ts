@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Departamento } from "../enums/departamento.enum";
 
 @Entity('unidades')
 export class Unidad {
@@ -18,9 +19,11 @@ export class Unidad {
         type: 'text'
     })
     responsable: string;
+
     @Column({
-        type: 'int',
+        type: 'enum',
+        enum: Departamento,
         nullable: true
     })
-    id_departamento: number;
+    departamento: String;
 }
