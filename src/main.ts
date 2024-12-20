@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { envs } from './config/envs';
 
 async function bootstrap() {
   const logger = new Logger('Modulo-Oficiles-Unidades');
@@ -9,7 +10,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       // urls: ['amqp://localhost:5672'],
-      urls: ['amqp://rabbitmq:5672'],
+      urls: envs.rabbitmqServers,
       queue: 'main_queue',
     },
   });
