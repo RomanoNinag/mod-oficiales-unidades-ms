@@ -25,5 +25,6 @@ async function bootstrap() {
   await app.listen();
 
   logger.log('Microservicio OficialesUnidades is running');
+  logger.log('Ms con github actions');
 }
 bootstrap();
