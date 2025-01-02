@@ -13,3 +13,4 @@ services:
     container_name: cont_db_armamento
     volumes:
       - ./postgres:/var/lib/postgresql/data
+      # - ./initdb:/docker-entrypoint-initdb.d

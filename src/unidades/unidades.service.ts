@@ -55,4 +55,16 @@ export class UnidadesService {
     console.log(error)
     throw new RpcException('Otro tipo de error de base de datos!')
   }
+
+  async truncateUnidades(): Promise<void> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    try {
+      await queryRunner.query(`TRUNCATE TABLE "unidades" CASCADE`);
+    } catch (error) {
+      this.handleDBExceptions(error);
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }

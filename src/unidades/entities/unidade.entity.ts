@@ -26,4 +26,10 @@ export class Unidad {
         nullable: true
     })
     departamento: String;
+
+    // @Column({
+    //     type: 'text',
+    //     nullable: true
+    // })
+    // direccion: string;
 }

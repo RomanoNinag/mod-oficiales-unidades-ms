@@ -1,6 +1,8 @@
+import { Transform } from "class-transformer";
 import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateOficialeDto {
+
     @IsString()
     @IsNotEmpty()
     ci: string;
@@ -21,16 +23,18 @@ export class CreateOficialeDto {
     @IsOptional() // Asumiendo que genero puede ser opcional
     genero: string;
 
+    @Transform(({ value }) => new Date(value))
     @IsDate()
-    fecha_nacimiento: string;
-
-    @IsNumber()
-    nro_escalafon: number;
+    fecha_nacimiento: Date;
 
     @IsString()
-    @IsOptional() // Asumiendo que promocion puede ser opcional
-    promocion: string;
+    nro_escalafon: string;
 
+    @IsNumber()
+    @IsOptional() // Asumiendo que promocion puede ser opcional
+    promocion: number;
+
+    @Transform(({ value }) => new Date(value))
     @IsDate()
     fecha_ingreso_institucion: Date;
 

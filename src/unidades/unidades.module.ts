@@ -10,6 +10,9 @@ import { Unidad } from './entities/unidade.entity';
   imports: [
     // Importamos el módulo de TypeOrm
     TypeOrmModule.forFeature([Unidad])
+  ],
+  exports: [
+    UnidadesService
   ]
 })
 export class UnidadesModule { }

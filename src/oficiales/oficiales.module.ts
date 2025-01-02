@@ -10,5 +10,8 @@ import { Oficial } from './entities/oficial.entity';
   imports: [
     TypeOrmModule.forFeature([Oficial]),
   ],
+  exports: [
+    OficialesService
+  ]
 })
 export class OficialesModule { }

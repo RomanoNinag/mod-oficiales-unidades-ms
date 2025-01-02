@@ -1,7 +1,8 @@
 import { IsNumber, IsString } from "class-validator";
 import { Persona } from "./persona.entity";
-import { Column } from "typeorm";
+import { Column, Entity } from "typeorm";
 
+@Entity('oficiales')
 export class Oficial extends Persona {
 
     @Column({
@@ -10,7 +11,7 @@ export class Oficial extends Persona {
     nro_escalafon: string;
 
     @Column({
-        type: 'number',
+        type: 'int',
     })
     promocion: number;
 
