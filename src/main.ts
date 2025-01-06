@@ -23,6 +23,6 @@ async function bootstrap() {
 
   await app.listen();
 
-  logger.log('MS OficialesUnidades is running');
+  logger.log('MS OficialesUnidades fix q2 is running');
 }
 bootstrap();
