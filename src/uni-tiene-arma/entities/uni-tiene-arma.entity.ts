@@ -1,10 +1,9 @@
-import { BaseEntity } from "src/common/entities/base.entity";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('fun_tiene_arma')
-export class FunTieneArma extends BaseEntity{
+@Entity('uni_tiene_arma')
+export class UniTieneArma {
     @PrimaryGeneratedColumn('uuid')
-    id_funTieneArma: string;
+    id_unitienearma: string;
 
     @Column('uuid', {
 
@@ -14,7 +13,7 @@ export class FunTieneArma extends BaseEntity{
     @Column('uuid', {
 
     })
-    id_fun_pol: string;
+    id_uni: string;
 
     @Column('date', {
 
@@ -32,13 +31,17 @@ export class FunTieneArma extends BaseEntity{
     fecha_registro: Date;
 
     @Column('text', {
-        unique: true
-    })
-    cod_registro: string;
-
-    @Column('text', {
         nullable: true
     })
     procedencia: string;
 
+    @Column('text', {
+        nullable: true
+    })
+    entrega_encalidad_de: string;
+
+    @Column('text', {
+
+    })
+    verif_existencia: string;
 }

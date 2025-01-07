@@ -6,30 +6,30 @@ import { UpdateFunTieneArmaDto } from './dto/update-fun-tiene-arma.dto';
 
 @Controller()
 export class FunTieneArmaController {
-  constructor(private readonly funTieneArmaService: FunTieneArmaService) {}
+  constructor(private readonly funTieneArmaService: FunTieneArmaService) { }
 
-  @MessagePattern('createFunTieneArma')
+  @MessagePattern('crear.ofiuni.funTieneArma')
   create(@Payload() createFunTieneArmaDto: CreateFunTieneArmaDto) {
     return this.funTieneArmaService.create(createFunTieneArmaDto);
   }
 
-  @MessagePattern('findAllFunTieneArma')
+  @MessagePattern('get.ofiuni.funTieneArma')
   findAll() {
     return this.funTieneArmaService.findAll();
   }
 
-  @MessagePattern('findOneFunTieneArma')
-  findOne(@Payload() id: number) {
+  @MessagePattern('get.ofiuni.funTieneArma.id')
+  findOne(@Payload('id') id: string) {
     return this.funTieneArmaService.findOne(id);
   }
 
-  @MessagePattern('updateFunTieneArma')
+  @MessagePattern('update.ofiuni.funTieneArma')
   update(@Payload() updateFunTieneArmaDto: UpdateFunTieneArmaDto) {
     return this.funTieneArmaService.update(updateFunTieneArmaDto.id, updateFunTieneArmaDto);
   }
 
-  @MessagePattern('removeFunTieneArma')
-  remove(@Payload() id: number) {
-    return this.funTieneArmaService.remove(id);
+  @MessagePattern('delete.ofiuni.funTieneArma')
+  remove(@Payload('id') id: string) {
+    return this.funTieneArmaService.softDelete(id);
   }
 }

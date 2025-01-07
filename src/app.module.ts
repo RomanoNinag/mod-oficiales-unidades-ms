@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { envs } from './config/envs';
 import { FunTieneArmaModule } from './fun-tiene-arma/fun-tiene-arma.module';
 import { SeedModule } from './seed/seed.module';
+import { UniTieneArmaModule } from './uni-tiene-arma/uni-tiene-arma.module';
+import { UniTieneEquipoModule } from './uni-tiene-equipo/uni-tiene-equipo.module';
 
 @Module({
   imports: [
@@ -21,7 +23,9 @@ import { SeedModule } from './seed/seed.module';
     UnidadesModule,
     OficialesModule,
     FunTieneArmaModule,
-    SeedModule
+    SeedModule,
+    UniTieneArmaModule,
+    UniTieneEquipoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
