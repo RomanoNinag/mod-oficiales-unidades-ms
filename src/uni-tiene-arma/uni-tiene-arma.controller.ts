@@ -13,23 +13,23 @@ export class UniTieneArmaController {
     return this.uniTieneArmaService.create(createUniTieneArmaDto);
   }
 
-  @MessagePattern('findAllUniTieneArma')
+  @MessagePattern('get.ofiuni.uniTieneArma')
   findAll() {
     return this.uniTieneArmaService.findAll();
   }
 
-  @MessagePattern('findOneUniTieneArma')
-  findOne(@Payload() id: number) {
+  @MessagePattern('get.ofiuni.uniTieneArma.id')
+  findOne(@Payload('id') id: string) {
     return this.uniTieneArmaService.findOne(id);
   }
 
-  @MessagePattern('updateUniTieneArma')
+  @MessagePattern('update.ofiuni.uniTieneArma')
   update(@Payload() updateUniTieneArmaDto: UpdateUniTieneArmaDto) {
     return this.uniTieneArmaService.update(updateUniTieneArmaDto.id, updateUniTieneArmaDto);
   }
 
-  @MessagePattern('removeUniTieneArma')
-  remove(@Payload() id: number) {
-    return this.uniTieneArmaService.remove(id);
+  @MessagePattern('delete.ofiuni.uniTieneArma')
+  remove(@Payload('id') id: string) {
+    return this.uniTieneArmaService.softDelete(id);
   }
 }

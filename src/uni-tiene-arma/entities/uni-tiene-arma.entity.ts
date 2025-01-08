@@ -1,7 +1,8 @@
+import { BaseEntity } from "src/common/entities/base.entity";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('uni_tiene_arma')
-export class UniTieneArma {
+export class UniTieneArma extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id_unitienearma: string;
 
