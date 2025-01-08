@@ -1,10 +1,13 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateFunTieneArmaDto } from './dto/create-fun-tiene-arma.dto';
 import { UpdateFunTieneArmaDto } from './dto/update-fun-tiene-arma.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FunTieneArma } from './entities/fun-tiene-arma.entity';
 import { DataSource, Repository } from 'typeorm';
-import { RpcException } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { OficialesService } from 'src/oficiales/oficiales.service';
+import { RABBITMQ_SERVICE } from 'src/config';
+import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Injectable()
 export class FunTieneArmaService {
@@ -12,24 +15,67 @@ export class FunTieneArmaService {
     @InjectRepository(FunTieneArma)
     private readonly funTieneArmaRepository: Repository<FunTieneArma>,
     private readonly dataSource: DataSource,
+    // local services
+    private readonly oficialService: OficialesService,
+    // micro services
+    @Inject(RABBITMQ_SERVICE) private readonly client: ClientProxy,
   ) { }
   async create(createFunTieneArmaDto: CreateFunTieneArmaDto) {
     try {
+
+      const oficial = await this.oficialService.findOne(createFunTieneArmaDto.id_fun_pol);
+
+      const arma = await firstValueFrom(
+        this.client.send('get.articulo.arma.id', { id: createFunTieneArmaDto.id_arma })
+          .pipe(
+            catchError(error => {
+              return of(null);
+            })
+          )
+      );
+
       const funTieneArma = this.funTieneArmaRepository.create(createFunTieneArmaDto);
+
       await this.funTieneArmaRepository.save(funTieneArma);
-      return funTieneArma;
+      return {
+        funTieneArma,
+        oficial,
+        arma
+      };
     } catch (error) {
       this.handleDBExceptions(error);
     }
   }
 
   async findAll() {
-    return await this.funTieneArmaRepository.find({
+    const funTieneArma = await this.funTieneArmaRepository.find({
       where: {
         deleted_at: null,
       },
     });
+
+    const registros = await Promise.all(funTieneArma.map(async (funTieneArma) => {
+      const oficial = await this.oficialService.findOne(funTieneArma.id_fun_pol);
+
+      const arma = await firstValueFrom(
+        this.client.send('get.articulo.arma.id', { id: funTieneArma.id_arma })
+          .pipe(
+            catchError(error => {
+              return of(null);
+            })
+          )
+      );
+
+      return {
+        funTieneArma,
+        oficial,
+        arma,
+      }
+    }));
+    return registros;
   }
+
+
 
   async findAllRP() {
     return await this.funTieneArmaRepository.find({

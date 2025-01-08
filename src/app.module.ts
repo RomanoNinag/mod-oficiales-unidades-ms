@@ -9,6 +9,7 @@ import { FunTieneArmaModule } from './fun-tiene-arma/fun-tiene-arma.module';
 import { SeedModule } from './seed/seed.module';
 import { UniTieneArmaModule } from './uni-tiene-arma/uni-tiene-arma.module';
 import { UniTieneEquipoModule } from './uni-tiene-equipo/uni-tiene-equipo.module';
+import { RabbitMqModule } from './transporters/rabbit-mq.module';
 
 @Module({
   imports: [
@@ -19,6 +20,8 @@ import { UniTieneEquipoModule } from './uni-tiene-equipo/uni-tiene-equipo.module
       autoLoadEntities: true,
       synchronize: true,
     }),
+
+    RabbitMqModule,
 
     UnidadesModule,
     OficialesModule,
