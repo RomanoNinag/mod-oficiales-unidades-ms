@@ -19,8 +19,8 @@ export class UnidadesController {
     return this.unidadesService.findAll();
   }
 
-  @MessagePattern('findOneUnidade')
-  findOne(@Payload() id: number) {
+  @MessagePattern('get.unidad.id')
+  findOne(@Payload() id: string) {
     return this.unidadesService.findOne(id);
   }
 

@@ -31,8 +31,8 @@ export class UnidadesService {
     return this.unidadRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} unidade`;
+  findOne(id: string) {
+    return this.unidadRepository.findOneBy({id_unidad_policial: id});
   }
 
   update(id: number, updateUnidadeDto: UpdateUnidadDto) {

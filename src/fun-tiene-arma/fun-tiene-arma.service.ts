@@ -132,22 +132,44 @@ export class FunTieneArmaService {
     }));
     return registros;
   }
-
-  async findOne(id: string) {
-    // let funTieneArma: FunTieneArma;
+  async findOneById(id: string) {
     const funTieneArma = await this.funTieneArmaRepository.findOne({
       where: {
         id_funTieneArma: id,
         deleted_at: null,
       }
     });
+    return funTieneArma;
+  }
+  async findOne(id: string) {
+    const funTieneArma = await this.funTieneArmaRepository.findOne({
+      where: {
+        id_funTieneArma: id,
+        deleted_at: null,
+      }
+    });
+
     if (!funTieneArma) {
       throw new RpcException({
         status: HttpStatus.NOT_FOUND,
         message: 'No se encontró la relación entre funcionario y arma',
       });
     }
-    return funTieneArma;
+    const oficial = await this.oficialService.findOne(funTieneArma.id_fun_pol);
+
+    const arma = await firstValueFrom(
+      this.client.send('get.articulo.arma.id', { id: funTieneArma.id_arma })
+        .pipe(
+          catchError(error => {
+            return of(null);
+          })
+        )
+    );
+    return {
+      funTieneArma,
+      oficial,
+      arma,
+    };
   }
 
   async update(id: string, updateFunTieneArmaDto: UpdateFunTieneArmaDto) {
@@ -178,7 +200,7 @@ export class FunTieneArmaService {
   }
 
   async softDelete(id: string) {
-    const funTieneArma = await this.findOne(id);
+    const funTieneArma = await this.findOneById(id);
     funTieneArma.deleted_at = new Date();
     await this.funTieneArmaRepository.save(funTieneArma);
     return funTieneArma;

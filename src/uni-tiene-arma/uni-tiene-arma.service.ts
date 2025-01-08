@@ -5,8 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UniTieneArma } from './entities/uni-tiene-arma.entity';
 import { DataSource, Repository } from 'typeorm';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { OficialesService } from 'src/oficiales/oficiales.service';
 import { RABBITMQ_SERVICE } from 'src/config';
+import { UnidadesService } from 'src/unidades/unidades.service';
+import { catchError, firstValueFrom, of } from 'rxjs';
 
 @Injectable()
 export class UniTieneArmaService {
@@ -15,27 +16,58 @@ export class UniTieneArmaService {
     private readonly uniTieneArmaRepository: Repository<UniTieneArma>,
     private readonly dataSource: DataSource,
     // local services
-    private readonly oficialService: OficialesService,
+    private readonly unidadService: UnidadesService,
 
     // micro services
     @Inject(RABBITMQ_SERVICE) private readonly client: ClientProxy,
   ) { }
   async create(createUniTieneArmaDto: CreateUniTieneArmaDto) {
     try {
+      const unidad = await this.unidadService.findOne(createUniTieneArmaDto.id_uni);
+
+      const arma = await firstValueFrom(
+        this.client.send('get.articulo.arma.id', { id: createUniTieneArmaDto.id_arma })
+          .pipe(
+            catchError(error => {
+              return of(null);
+            })
+          )
+      );
       const uniTieneArma = this.uniTieneArmaRepository.create(createUniTieneArmaDto);
       await this.uniTieneArmaRepository.save(uniTieneArma);
-      return uniTieneArma;
+      return {
+        uniTieneArma,
+        unidad,
+        arma
+      };
     } catch (error) {
       this.handleDBExceptions(error);
     }
   }
 
   async findAll() {
-    return await this.uniTieneArmaRepository.find({
+    const uniTieneArma = await this.uniTieneArmaRepository.find({
       where: {
         deleted_at: null,
       },
     });
+    const registros = await Promise.all(uniTieneArma.map(async (uniTieneArma) => {
+      const unidad = await this.unidadService.findOne(uniTieneArma.id_uni);
+      const arma = await firstValueFrom(
+        this.client.send('get.articulo.arma.id', { id: uniTieneArma.id_arma })
+          .pipe(
+            catchError(error => {
+              return of(null);
+            })
+          )
+      );
+      return {
+        uniTieneArma,
+        unidad,
+        arma
+      };
+    }));
+    return registros;
   }
 
   async findOne(id: string) {
