@@ -31,6 +31,24 @@ export class FunTieneArmaService {
     });
   }
 
+  async findAllRP() {
+    return await this.funTieneArmaRepository.find({
+      where: {
+        deleted_at: null,
+        recurso_propio: true,
+      },
+    });
+  }
+
+  async findAllSRP() {
+    return await this.funTieneArmaRepository.find({
+      where: {
+        deleted_at: null,
+        recurso_propio: false,
+      },
+    });
+  }
+
   async findOne(id: string) {
     // let funTieneArma: FunTieneArma;
     const funTieneArma = await this.funTieneArmaRepository.findOne({

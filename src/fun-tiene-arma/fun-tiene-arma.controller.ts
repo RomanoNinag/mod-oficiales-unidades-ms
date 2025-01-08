@@ -18,6 +18,16 @@ export class FunTieneArmaController {
     return this.funTieneArmaService.findAll();
   }
 
+  @MessagePattern('get.ofiuni.funTieneArma.rp')
+  findAllRP() {
+    return this.funTieneArmaService.findAllRP();
+  }
+
+  @MessagePattern('get.ofiuni.funTieneArma.srp')
+  findAllSRP() {
+    return this.funTieneArmaService.findAllSRP();
+  }
+
   @MessagePattern('get.ofiuni.funTieneArma.id')
   findOne(@Payload('id') id: string) {
     return this.funTieneArmaService.findOne(id);
