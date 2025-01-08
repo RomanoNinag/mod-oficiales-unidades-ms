@@ -2,7 +2,7 @@ import { BaseEntity } from "src/common/entities/base.entity";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('fun_tiene_arma')
-export class FunTieneArma extends BaseEntity{
+export class FunTieneArma extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id_funTieneArma: string;
 
@@ -40,5 +40,10 @@ export class FunTieneArma extends BaseEntity{
         nullable: true
     })
     procedencia: string;
+
+    @Column('bool', {
+        default: false
+    })
+    recurso_propio: boolean;
 
 }

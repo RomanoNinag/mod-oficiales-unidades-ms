@@ -27,8 +27,8 @@ export class OficialesService {
     return this.oficialesRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} oficiale`;
+  findOne(id: string) {
+    return this.oficialesRepository.findOneBy({ id_persona: id });
   }
 
   update(id: number, updateOficialeDto: UpdateOficialeDto) {
