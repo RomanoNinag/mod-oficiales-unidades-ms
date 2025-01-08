@@ -1,10 +1,12 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateUniTieneArmaDto } from './dto/create-uni-tiene-arma.dto';
 import { UpdateUniTieneArmaDto } from './dto/update-uni-tiene-arma.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UniTieneArma } from './entities/uni-tiene-arma.entity';
 import { DataSource, Repository } from 'typeorm';
-import { RpcException } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { OficialesService } from 'src/oficiales/oficiales.service';
+import { RABBITMQ_SERVICE } from 'src/config';
 
 @Injectable()
 export class UniTieneArmaService {
@@ -12,6 +14,11 @@ export class UniTieneArmaService {
     @InjectRepository(UniTieneArma)
     private readonly uniTieneArmaRepository: Repository<UniTieneArma>,
     private readonly dataSource: DataSource,
+    // local services
+    private readonly oficialService: OficialesService,
+
+    // micro services
+    @Inject(RABBITMQ_SERVICE) private readonly client: ClientProxy,
   ) { }
   async create(createUniTieneArmaDto: CreateUniTieneArmaDto) {
     try {

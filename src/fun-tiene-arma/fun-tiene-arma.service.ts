@@ -78,21 +78,59 @@ export class FunTieneArmaService {
 
 
   async findAllRP() {
-    return await this.funTieneArmaRepository.find({
+    const funTieneArmaRP = await this.funTieneArmaRepository.find({
       where: {
         deleted_at: null,
         recurso_propio: true,
       },
     });
+    const registros = await Promise.all(funTieneArmaRP.map(async (funTieneArma) => {
+      const oficial = await this.oficialService.findOne(funTieneArma.id_fun_pol);
+
+      const arma = await firstValueFrom(
+        this.client.send('get.articulo.arma.id', { id: funTieneArma.id_arma })
+          .pipe(
+            catchError(error => {
+              return of(null);
+            })
+          )
+      );
+
+      return {
+        funTieneArma,
+        oficial,
+        arma,
+      }
+    }));
+    return registros;
   }
 
   async findAllSRP() {
-    return await this.funTieneArmaRepository.find({
+    const funTieneArmaSRP = await this.funTieneArmaRepository.find({
       where: {
         deleted_at: null,
         recurso_propio: false,
       },
     });
+    const registros = await Promise.all(funTieneArmaSRP.map(async (funTieneArma) => {
+      const oficial = await this.oficialService.findOne(funTieneArma.id_fun_pol);
+
+      const arma = await firstValueFrom(
+        this.client.send('get.articulo.arma.id', { id: funTieneArma.id_arma })
+          .pipe(
+            catchError(error => {
+              return of(null);
+            })
+          )
+      );
+
+      return {
+        funTieneArma,
+        oficial,
+        arma,
+      }
+    }));
+    return registros;
   }
 
   async findOne(id: string) {
