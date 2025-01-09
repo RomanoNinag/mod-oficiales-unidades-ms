@@ -25,6 +25,12 @@ export class FunTieneArmaService {
 
       const oficial = await this.oficialService.findOne(createFunTieneArmaDto.id_fun_pol);
 
+      if (!oficial) {
+        throw new RpcException({
+          status: HttpStatus.NOT_FOUND,
+          message: 'No se encontró el oficial',
+        });
+      }
       const arma = await firstValueFrom(
         this.client.send('get.articulo.arma.id', { id: createFunTieneArmaDto.id_arma })
           .pipe(
@@ -34,13 +40,32 @@ export class FunTieneArmaService {
           )
       );
 
+      if (!arma) {
+        throw new RpcException({
+          status: HttpStatus.NOT_FOUND,
+          message: 'No se encontró el arma',
+        });
+      }
       const funTieneArma = this.funTieneArmaRepository.create(createFunTieneArmaDto);
 
       await this.funTieneArmaRepository.save(funTieneArma);
+
+      const newArma = await firstValueFrom(
+        this.client.send('update.articulo.arma', {
+          id: createFunTieneArmaDto.id_arma,
+          asignado: true,
+        })
+          .pipe(
+            catchError(error => {
+              return of(null);
+            })
+          )
+      );
+
       return {
         funTieneArma,
         oficial,
-        arma
+        newArma
       };
     } catch (error) {
       this.handleDBExceptions(error);
@@ -209,6 +234,9 @@ export class FunTieneArmaService {
   private handleDBExceptions(error) {
     console.log(error);
 
+    if (error instanceof RpcException) {
+      throw error;
+    }
     if (error.code === '23505') {
       throw new RpcException({
         status: HttpStatus.BAD_REQUEST,
@@ -222,7 +250,7 @@ export class FunTieneArmaService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     try {
-      await queryRunner.query(`TRUNCATE TABLE "ofi_tiene_arma" CASCADE`);
+      await queryRunner.query(`TRUNCATE TABLE "uni_tiene_arma" CASCADE`);
     } catch (error) {
       this.handleDBExceptions(error);
     } finally {

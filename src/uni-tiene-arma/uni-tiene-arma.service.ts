@@ -24,7 +24,12 @@ export class UniTieneArmaService {
   async create(createUniTieneArmaDto: CreateUniTieneArmaDto) {
     try {
       const unidad = await this.unidadService.findOne(createUniTieneArmaDto.id_uni);
-
+      if (!unidad) {
+        throw new RpcException({
+          status: HttpStatus.NOT_FOUND,
+          message: 'No se encontró la unidad',
+        });
+      }
       const arma = await firstValueFrom(
         this.client.send('get.articulo.arma.id', { id: createUniTieneArmaDto.id_arma })
           .pipe(
@@ -33,12 +38,30 @@ export class UniTieneArmaService {
             })
           )
       );
+      if (!arma) {
+        throw new RpcException({
+          status: HttpStatus.NOT_FOUND,
+          message: 'No se encontró el arma',
+        });
+      }
       const uniTieneArma = this.uniTieneArmaRepository.create(createUniTieneArmaDto);
       await this.uniTieneArmaRepository.save(uniTieneArma);
+
+      const newArma = await firstValueFrom(
+        this.client.send('update.articulo.arma', {
+          id: createUniTieneArmaDto.id_arma,
+          asignado: true,
+        })
+          .pipe(
+            catchError(error => {
+              return of(null);
+            })
+          )
+      );
       return {
         uniTieneArma,
         unidad,
-        arma
+        newArma
       };
     } catch (error) {
       this.handleDBExceptions(error);
@@ -70,7 +93,7 @@ export class UniTieneArmaService {
     return registros;
   }
 
-  async findOne(id: string) {
+  async findOneById(id: string) {
     const uniTieneArma = await this.uniTieneArmaRepository.findOne({
       where: {
         id_unitienearma: id,
@@ -84,6 +107,35 @@ export class UniTieneArmaService {
       });
     }
     return uniTieneArma;
+  }
+
+  async findOne(id: string) {
+    const uniTieneArma = await this.uniTieneArmaRepository.findOne({
+      where: {
+        id_unitienearma: id,
+        deleted_at: null,
+      }
+    });
+    if (!uniTieneArma) {
+      throw new RpcException({
+        status: HttpStatus.NOT_FOUND,
+        message: 'No se encontró la relación entre unidad y arma',
+      });
+    }
+    const unidad = await this.unidadService.findOne(uniTieneArma.id_uni);
+    const arma = await firstValueFrom(
+      this.client.send('get.articulo.arma.id', { id: uniTieneArma.id_arma })
+        .pipe(
+          catchError(error => {
+            return of(null);
+          })
+        )
+    );
+    return {
+      uniTieneArma,
+      unidad,
+      arma
+    };
   }
 
   async update(id: string, updateUniTieneArmaDto: UpdateUniTieneArmaDto) {
@@ -112,7 +164,7 @@ export class UniTieneArmaService {
   }
 
   async softDelete(id: string) {
-    const uniTieneArma = await this.findOne(id);
+    const uniTieneArma = await this.findOneById(id);
     uniTieneArma.deleted_at = new Date();
     await this.uniTieneArmaRepository.save(uniTieneArma);
     return uniTieneArma;
@@ -121,6 +173,9 @@ export class UniTieneArmaService {
   private handleDBExceptions(error) {
     console.log(error);
 
+    if (error instanceof RpcException) {
+      throw error;
+    }
     if (error.code === '23505') {
       throw new RpcException({
         status: HttpStatus.BAD_REQUEST,
