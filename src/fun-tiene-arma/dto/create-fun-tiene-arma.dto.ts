@@ -8,7 +8,7 @@ export class CreateFunTieneArmaDto {
 
     @IsString()
     @IsUUID()
-    id_fun_pol: string;
+    id_fun_pol: number;
 
     // @Transform(({ value }) => new Date(value))
     @IsDate()

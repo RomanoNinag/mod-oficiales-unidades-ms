@@ -15,7 +15,7 @@ export class FunTieneArma extends BaseEntity {
     @Column('uuid', {
 
     })
-    id_fun_pol: string;
+    id_fun_pol: number;
 
     @Column('date', {
 

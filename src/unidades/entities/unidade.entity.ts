@@ -3,7 +3,7 @@ import { Departamento } from "../enums/departamento.enum";
 
 @Entity('unidades')
 export class Unidad {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn()
     id_unidad_policial: string;
 
     @Column({

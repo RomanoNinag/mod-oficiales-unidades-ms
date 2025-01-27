@@ -19,7 +19,7 @@ export class OficialesController {
   }
 
   @MessagePattern('get.oficial.id')
-  findOne(@Payload('id') id: string) {
+  findOne(@Payload('id') id: number) {
     return this.oficialesService.findOne(id);
   }
 

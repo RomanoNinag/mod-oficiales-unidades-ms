@@ -158,43 +158,62 @@ export class FunTieneArmaService {
     return registros;
   }
   async findOneById(id: string) {
-    const funTieneArma = await this.funTieneArmaRepository.findOne({
-      where: {
-        id_funTieneArma: id,
-        deleted_at: null,
+    try {
+      const funTieneArma = await this.funTieneArmaRepository.findOne({
+        where: {
+          id_funTieneArma: id,
+          deleted_at: null,
+        }
+      });
+      if (!funTieneArma) {
+        // throw new RpcException('No se encontró la relación entre funcionario y arma solo reg');
+        throw new RpcException({
+          status: HttpStatus.NOT_FOUND,
+          message: 'No se encontró la relación entre funcionario y arma solo reg',
+        })
       }
-    });
-    return funTieneArma;
+      return funTieneArma;
+      
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
   async findOne(id: string) {
-    const funTieneArma = await this.funTieneArmaRepository.findOne({
-      where: {
-        id_funTieneArma: id,
-        deleted_at: null,
-      }
-    });
+    try {
 
-    if (!funTieneArma) {
-      throw new RpcException({
-        status: HttpStatus.NOT_FOUND,
-        message: 'No se encontró la relación entre funcionario y arma',
+      const funTieneArma = await this.funTieneArmaRepository.findOne({
+        where: {
+          id_funTieneArma: id,
+          deleted_at: null,
+        }
       });
-    }
-    const oficial = await this.oficialService.findOne(funTieneArma.id_fun_pol);
 
-    const arma = await firstValueFrom(
-      this.client.send('get.articulo.arma.id', { id: funTieneArma.id_arma })
-        .pipe(
-          catchError(error => {
-            return of(null);
-          })
-        )
-    );
-    return {
-      funTieneArma,
-      oficial,
-      arma,
-    };
+      if (!funTieneArma) {
+        throw new RpcException({
+          status: HttpStatus.NOT_FOUND,
+          message: 'No se encontró la relación entre funcionario y arma',
+        });
+      }
+      const oficial = await this.oficialService.findOne(funTieneArma.id_fun_pol);
+
+      const arma = await firstValueFrom(
+        this.client.send('get.articulo.arma.id', { id: funTieneArma.id_arma })
+          .pipe(
+            catchError(error => {
+              return of(null);
+            })
+          )
+      );
+      return {
+        funTieneArma,
+        oficial,
+        arma,
+      };
+    } catch (error) {
+      console.log('en el catch ------------------- ', error);
+
+      this.handleDBExceptions(error);
+    }
   }
 
   async update(id: string, updateFunTieneArmaDto: UpdateFunTieneArmaDto) {
@@ -232,7 +251,7 @@ export class FunTieneArmaService {
   }
 
   private handleDBExceptions(error) {
-    console.log(error);
+    console.log('Error en el handleException......... ',error);
 
     if (error instanceof RpcException) {
       throw error;

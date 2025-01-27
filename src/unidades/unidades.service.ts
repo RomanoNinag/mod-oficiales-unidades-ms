@@ -60,7 +60,7 @@ export class UnidadesService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     try {
-      await queryRunner.query(`TRUNCATE TABLE "unidades" CASCADE`);
+      await queryRunner.query(`TRUNCATE TABLE "unidades" RESTART IDENTITY CASCADE`);
     } catch (error) {
       this.handleDBExceptions(error);
     } finally {

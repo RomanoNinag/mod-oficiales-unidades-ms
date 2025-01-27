@@ -27,7 +27,7 @@ export class OficialesService {
     return this.oficialesRepository.find();
   }
 
-  findOne(id: string) {
+  findOne(id: number) {
     return this.oficialesRepository.findOneBy({ id_persona: id });
   }
 
@@ -57,7 +57,7 @@ export class OficialesService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     try {
-      await queryRunner.query(`TRUNCATE TABLE "oficiales" CASCADE`);
+      await queryRunner.query(`TRUNCATE TABLE "oficiales" RESTART IDENTITY CASCADE`);
     } catch (error) {
       this.handleDBExceptions(error);
     } finally {
