@@ -1,13 +1,12 @@
 import { Transform, Type } from "class-transformer";
-import { IsBoolean, IsDate, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsBoolean, IsDate, IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
 
 export class CreateFunTieneArmaDto {
     @IsString()
     @IsUUID()
     id_arma: string;
 
-    @IsString()
-    @IsUUID()
+    @IsNumber()
     id_fun_pol: number;
 
     // @Transform(({ value }) => new Date(value))

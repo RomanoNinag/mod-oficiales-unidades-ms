@@ -12,7 +12,7 @@ export class FunTieneArma extends BaseEntity {
     })
     id_arma: string;
 
-    @Column('uuid', {
+    @Column('int', {
 
     })
     id_fun_pol: number;
