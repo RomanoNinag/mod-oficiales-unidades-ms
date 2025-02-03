@@ -6,10 +6,11 @@ export class UniTieneEquipo extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id_unitieneequipo: string;
 
-    @Column('uuid', {
+    @Column('integer', {
 
     })
-    id_unidad: string;
+    id_unidad: number;
+
     @Column('uuid', {
 
     })

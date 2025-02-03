@@ -11,10 +11,10 @@ export class UniTieneArma extends BaseEntity {
     })
     id_arma: string;
 
-    @Column('uuid', {
+    @Column('integer', {
 
     })
-    id_uni: string;
+    id_uni: number;
 
     @Column('date', {
 

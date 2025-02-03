@@ -21,7 +21,7 @@ export class UnidadesController {
 
   @MessagePattern('get.unidad.id')
   findOne(@Payload() id: string) {
-    return this.unidadesService.findOne(id);
+    return this.unidadesService.findOne(+id);
   }
 
   @MessagePattern('updateUnidade')

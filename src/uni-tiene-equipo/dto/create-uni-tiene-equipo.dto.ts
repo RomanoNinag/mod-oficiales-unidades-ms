@@ -1,9 +1,9 @@
-import { IsString, IsUUID } from "class-validator";
+import { IsNumber, IsString, IsUUID } from "class-validator";
 
 export class CreateUniTieneEquipoDto {
 
-    @IsUUID()
-    id_unidad: string;
+    @IsNumber()
+    id_unidad: number;
     @IsUUID()
     id_equipo: string;
     @IsString()

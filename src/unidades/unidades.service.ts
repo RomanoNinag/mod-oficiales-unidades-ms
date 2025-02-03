@@ -17,6 +17,7 @@ export class UnidadesService {
 
   async create(createUnidadeDto: CreateUnidadDto) {
     try {
+
       const unidad = this.unidadRepository.create(createUnidadeDto);
       await this.unidadRepository.save(unidad);
       return unidad;
@@ -31,8 +32,8 @@ export class UnidadesService {
     return this.unidadRepository.find();
   }
 
-  findOne(id: string) {
-    return this.unidadRepository.findOneBy({id_unidad_policial: id});
+  findOne(id: number) {
+    return this.unidadRepository.findOneBy({ id_unidad_policial: id });
   }
 
   update(id: number, updateUnidadeDto: UpdateUnidadDto) {
@@ -67,4 +68,5 @@ export class UnidadesService {
       await queryRunner.release();
     }
   }
+
 }

@@ -11,6 +11,7 @@ import { UniTieneArmaModule } from './uni-tiene-arma/uni-tiene-arma.module';
 import { UniTieneEquipoModule } from './uni-tiene-equipo/uni-tiene-equipo.module';
 import { RabbitMqModule } from './transporters/rabbit-mq.module';
 import { IncidenteUnidadModule } from './incidente-unidad/incidente-unidad.module';
+import { ImportDataModule } from './import-data/import-data.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { IncidenteUnidadModule } from './incidente-unidad/incidente-unidad.modul
     UniTieneArmaModule,
     UniTieneEquipoModule,
     IncidenteUnidadModule,
+    ImportDataModule,
   ],
   controllers: [AppController],
   providers: [AppService],
